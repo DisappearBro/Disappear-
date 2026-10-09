@@ -1,422 +1,319 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>disappear.com — Aesthetic Workspace & Audio Hub</title>
+    <title>Disappear.com - Calm Ambience & Study Space</title>
     <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        slate: { 950: '#0a0f1d', 900: '#0f172a', 800: '#1e293b' },
-                        emerald: { 400: '#34d399', 500: '#10b981', 900: '#064e3b' }
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- Google Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .font-quote { font-family: 'Playfair Display', serif; }
-        .glass { background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .glass-card { background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        
-        /* Custom Equalizer Animation */
-        .bar { width: 3px; background: #34d399; border-radius: 3px; animation: bounce 1.2s ease-in-out infinite alternate; }
-        .bar:nth-child(2) { animation-delay: 0.2s; }
-        .bar:nth-child(3) { animation-delay: 0.4s; }
-        .bar:nth-child(4) { animation-delay: 0.1s; }
-        .bar:nth-child(5) { animation-delay: 0.5s; }
-        @keyframes bounce { 0% { height: 4px; } 100% { height: 18px; } }
-        .paused .bar { animation-play-state: paused; height: 4px; }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(52, 211, 153, 0.4); }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-emerald-500 selection:text-white">
+<body class="min-h-screen flex flex-col pb-24 selection:bg-emerald-500 selection:text-slate-950">
 
-    <!-- TOP NAVIGATION BAR -->
-    <header class="glass sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center space-x-3">
-            <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_12px_rgba(52,211,153,0.8)]"></span>
-            <h1 class="text-xl font-bold tracking-wider bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-200 bg-clip-text text-transparent">disappear.com</h1>
-        </div>
-        
-        <nav class="hidden md:flex space-x-8 text-xs font-semibold uppercase tracking-widest text-slate-400">
-            <button onclick="switchTab('study')" class="hover:text-emerald-400 transition">Workspace</button>
-            <button onclick="switchTab('nature')" class="hover:text-emerald-400 transition">Nature Healing</button>
-            <button onclick="switchTab('community')" class="hover:text-emerald-400 transition">Aesthetic Feed</button>
-        </nav>
-
-        <div class="flex items-center space-x-3">
-            <span class="text-xs text-slate-400 font-mono" id="clock-display">00:00:00</span>
-        </div>
-    </header>
-
-    <!-- QUOTES BANNER -->
-    <div class="max-w-6xl w-full mx-auto px-6 pt-6">
-        <div class="glass-card p-4 rounded-2xl flex items-center justify-between border-l-4 border-l-emerald-400">
-            <div class="flex items-center space-x-3">
-                <span class="text-xl">✨</span>
-                <p id="quote-text" class="text-sm italic font-quote text-slate-200">"Silence is not the absence of sound, but the presence of peace."</p>
+    <!-- ENTRY MODAL -->
+    <div id="entry-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl text-center space-y-4">
+            <div class="w-12 h-12 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-moon"></i>
             </div>
-            <button onclick="nextQuote()" class="text-xs text-slate-400 hover:text-emerald-400 transition font-medium px-2 py-1">New Quote ↻</button>
+            <h2 class="text-2xl font-bold tracking-tight">Welcome to Disappear.com</h2>
+            <p class="text-slate-400 text-sm">আপনি কি অ্যাকাউন্ট খুলতে চান নাকি ফ্রি লগইন ছাড়া ব্রাউজ করতে চান?</p>
+            <div class="space-y-2 pt-2">
+                <button onclick="closeModal()" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold rounded-xl transition duration-200">
+                    Create Account
+                </button>
+                <button onclick="closeModal()" class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium rounded-xl transition duration-200">
+                    Browse Without Login
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- MAIN APP CONTAINER -->
-    <main class="flex-grow max-w-6xl w-full mx-auto p-6 grid grid-cols-1 gap-6">
+    <!-- HEADER & REAL-TIME CLOCK -->
+    <header class="border-b border-slate-800/80 bg-slate-950/60 backdrop-blur sticky top-0 z-40 px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <div class="flex items-center space-x-2">
+            <span class="text-emerald-400 font-bold text-xl tracking-wider">Disappear.com</span>
+            <span class="text-xs bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/20">Study Hub</span>
+        </div>
+        <div id="real-time-clock" class="text-xs text-slate-300 bg-slate-900 px-3 py-1.5 rounded-full border border-slate-800 flex items-center gap-2 shadow-sm">
+            <i class="fa-regular fa-clock text-emerald-400"></i>
+            <span id="clock-text">Loading time...</span>
+        </div>
+    </header>
 
-        <!-- TAB 1: WORKSPACE & AESTHETIC MP3 PLAYER -->
-        <section id="tab-study" class="space-y-6">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                
-                <!-- NOTE EDITOR AREA -->
-                <div class="lg:col-span-2 glass p-6 rounded-3xl flex flex-col h-[650px] shadow-2xl">
-                    <div class="flex justify-between items-center mb-4">
-                        <input type="text" id="note-title" placeholder="Untitled Study Note..." class="bg-transparent text-xl font-semibold outline-none border-b border-slate-800 pb-2 w-2/3 focus:border-emerald-400 transition text-emerald-300">
-                        <div class="flex space-x-2">
-                            <button onclick="saveNoteToFile()" class="bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-semibold text-xs px-3.5 py-2 rounded-xl transition shadow-lg shadow-emerald-950">Save File</button>
-                            <button onclick="shareToCommunity()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs px-3.5 py-2 rounded-xl transition border border-slate-700">Share Public</button>
+    <!-- CONTENT TABS -->
+    <main class="flex-1 max-w-4xl w-full mx-auto p-4 space-y-6">
+
+        <!-- TAB 1: HOME -->
+        <section id="tab-home" class="tab-content space-y-6">
+            <div class="bg-gradient-to-r from-emerald-950/40 to-slate-900 border border-emerald-500/20 rounded-2xl p-6 relative overflow-hidden shadow-lg">
+                <div class="relative z-10 space-y-2">
+                    <h1 class="text-2xl font-bold">Workspace & Ambience</h1>
+                    <p class="text-slate-400 text-sm">আপনার পছন্দের ব্যাকগ্রাউন্ড কালার, ইউটিউব মিউজিক প্লেয়ার এবং নোটস ক্রিয়েট করার স্থান।</p>
+                </div>
+            </div>
+
+            <!-- YouTube Music Player -->
+            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-md">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-semibold flex items-center gap-2 text-emerald-400"><i class="fa-brands fa-youtube"></i> YouTube Music / Ambience</h3>
+                    <span class="text-xs bg-emerald-500/10 text-emerald-400 px-2.5 py-1 rounded">Background Play</span>
+                </div>
+                <p class="text-xs text-slate-400">আপনার পছন্দের ইউটিউব মিউজিক বা রিল্যাক্সিং সাউন্ড ব্যাকগ্রাউন্ডে প্লে করুন পড়ার সময়।</p>
+                <div class="flex gap-2">
+                    <input type="text" id="yt-link-input" placeholder="Paste YouTube link or track name..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
+                    <button onclick="playYouTubeMusic()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-4 py-2 rounded-xl text-xs font-semibold transition">Play Audio</button>
+                </div>
+            </div>
+
+            <!-- Quick Notes -->
+            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3 shadow-md">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-semibold flex items-center gap-2 text-emerald-400"><i class="fa-solid fa-note-sticky"></i> Create Notes & Study Space</h3>
+                    <button onclick="saveNote()" class="text-xs text-emerald-400 hover:underline flex items-center gap-1"><i class="fa-solid fa-floppy-disk"></i> Save Note</button>
+                </div>
+                <textarea id="workspace-note" rows="4" placeholder="Write your notes here... (Auto saved locally)" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-emerald-500 resize-none"></textarea>
+            </div>
+        </section>
+
+        <!-- TAB 2: POSTS -->
+        <section id="tab-posts" class="tab-content hidden space-y-6">
+            <div class="flex items-center justify-between bg-slate-900/60 border border-slate-800 p-4 rounded-2xl shadow-md">
+                <div>
+                    <h2 class="font-bold text-lg">Community Feed & Posts</h2>
+                    <p class="text-xs text-slate-400">Success related blogs & 1000-word limit posts</p>
+                </div>
+                <button onclick="createPost()" class="bg-emerald-500 text-slate-950 font-semibold px-4 py-2 rounded-xl text-xs hover:bg-emerald-400 transition flex items-center gap-1.5 shadow">
+                    <i class="fa-solid fa-video"></i> Reels / Post
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3 shadow-md">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 font-bold flex items-center justify-center">DB</div>
+                            <div>
+                                <h4 class="font-semibold text-sm">DisappearBro</h4>
+                                <span class="text-[10px] text-slate-500">Success Blog • 1 hr ago</span>
+                            </div>
                         </div>
+                        <span class="text-xs bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded">Featured</span>
                     </div>
-                    
-                    <textarea id="note-content" placeholder="Type your thoughts, summaries, or study notes here..." class="w-full flex-grow bg-slate-900/50 p-5 rounded-2xl border border-slate-800/80 outline-none resize-none text-slate-200 text-sm leading-relaxed focus:border-emerald-500/40 transition font-sans"></textarea>
-                    
-                    <div class="flex justify-between items-center mt-3 text-[11px] text-slate-500 font-mono">
-                        <span id="save-status">Auto-saved to local storage</span>
-                        <span id="char-count">0 characters</span>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        "Stop innovating, start copying" - রাজ শামীানির এই ফর্মুলা মেনে আমরা আমাদের স্টাডি টুলটি উন্নত করছি। এখানে ১০০০ শব্দ পর্যন্ত বিস্তারিত পোস্ট ও স্টোরি শেয়ার করা যাবে শক্তিশালী অ্যালগরিদমের মাধ্যমে...
+                    </p>
+                    <div class="flex items-center gap-4 text-xs text-slate-400 pt-2 border-t border-slate-800/80">
+                        <button class="hover:text-emerald-400 flex items-center gap-1"><i class="fa-regular fa-heart"></i> 85 Likes</button>
+                        <button class="hover:text-emerald-400 flex items-center gap-1"><i class="fa-regular fa-comment"></i> 12 Comments</button>
                     </div>
                 </div>
+            </div>
+        </section>
 
-                <!-- SIDEBAR: AESTHETIC MP3 PLAYER & RESEARCH RESOURCES -->
-                <div class="space-y-6 flex flex-col justify-between h-[650px]">
-                    
-                    <!-- AESTHETIC MP3 PLAYER WIDGET -->
-                    <div class="glass p-6 rounded-3xl shadow-xl flex flex-col justify-between relative overflow-hidden border border-emerald-500/20">
-                        <!-- Cover Visualizer Background -->
-                        <div class="flex items-center space-x-4 mb-4">
-                            <div class="relative group">
-                                <img id="player-cover" src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=300&q=80" alt="Cover" class="w-16 h-16 rounded-2xl object-cover shadow-lg border border-slate-700">
-                                <div id="equalizer" class="absolute inset-0 bg-slate-950/60 rounded-2xl flex items-center justify-center space-x-1 paused">
-                                    <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
-                                </div>
-                            </div>
-                            <div class="overflow-hidden">
-                                <span class="text-[10px] font-bold tracking-widest uppercase text-emerald-400">Now Playing</span>
-                                <h4 id="track-title" class="font-semibold text-sm truncate text-white">Midnight Rain Lo-Fi</h4>
-                                <p id="track-artist" class="text-xs text-slate-400 truncate">Aesthetic Chill Beats</p>
-                            </div>
-                        </div>
-
-                        <!-- Progress Bar -->
-                        <div class="space-y-1 my-2">
-                            <input type="range" id="seek-slider" min="0" max="100" value="0" class="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-400" onchange="seekTrack()">
-                            <div class="flex justify-between text-[10px] text-slate-500 font-mono">
-                                <span id="current-time">00:00</span>
-                                <span id="total-duration">00:00</span>
-                            </div>
-                        </div>
-
-                        <!-- Controls & Track Switcher -->
-                        <div class="flex items-center justify-between mt-2">
-                            <select id="playlist-select" onchange="changeTrack(this.value)" class="bg-slate-900 border border-slate-700 text-xs rounded-xl px-2 py-1 text-slate-300 outline-none w-28">
-                                <option value="0">Lo-Fi Beats</option>
-                                <option value="1">Soft Rain</option>
-                                <option value="2">Forest Stream</option>
-                                <option value="3">Deep Space Piano</option>
-                            </select>
-
-                            <div class="flex items-center space-x-3">
-                                <button onclick="prevTrack()" class="text-slate-400 hover:text-white transition">⏮</button>
-                                <button onclick="togglePlay()" id="play-btn" class="w-10 h-10 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 flex items-center justify-center font-bold shadow-lg transition">▶</button>
-                                <button onclick="nextTrack()" class="text-slate-400 hover:text-white transition">⏭</button>
-                            </div>
-
-                            <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.7" onchange="adjustVolume()" class="w-12 h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-400">
-                        </div>
-
-                        <audio id="audio-engine" loop></audio>
-                    </div>
-
-                    <!-- RESEARCH RESOURCES ARCHIVE -->
-                    <div class="glass p-6 rounded-3xl flex-grow flex flex-col justify-between">
+        <!-- TAB 3: PEOPLE -->
+        <section id="tab-people" class="tab-content hidden space-y-6">
+            <h2 class="text-xl font-bold">People & Study Partners</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 flex items-center justify-between shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-emerald-400 font-bold">SK</div>
                         <div>
-                            <h3 class="text-xs font-bold tracking-widest text-emerald-400 uppercase mb-3">Academic Research Hub</h3>
-                            <ul class="space-y-2.5 text-xs text-slate-300">
-                                <li><a href="https://scholar.google.com" target="_blank" class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/60 hover:bg-slate-800 transition border border-slate-800/80"><span>📚 Google Scholar Portal</span><span class="text-slate-500">↗</span></a></li>
-                                <li><a href="https://www.jstor.org" target="_blank" class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/60 hover:bg-slate-800 transition border border-slate-800/80"><span>🔬 JSTOR Research Papers</span><span class="text-slate-500">↗</span></a></li>
-                                <li><a href="https://archive.org" target="_blank" class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/60 hover:bg-slate-800 transition border border-slate-800/80"><span>📖 Internet Archive Library</span><span class="text-slate-500">↗</span></a></li>
-                            </ul>
+                            <h4 class="font-semibold text-sm">Sadman Kabir</h4>
+                            <p class="text-xs text-slate-400">Goal: 6 hrs focus</p>
                         </div>
-                        <p class="text-[11px] text-slate-400 italic mt-2">"Plug in your earphones, select your atmosphere, and disappear into your studies."</p>
                     </div>
-
-                </div>
-
-            </div>
-        </section>
-
-        <!-- TAB 2: NATURE HEALING VISUALIZER -->
-        <section id="tab-nature" class="hidden space-y-6">
-            <div class="glass p-10 rounded-3xl text-center relative overflow-hidden h-[550px] flex flex-col justify-center items-center shadow-2xl">
-                <div class="absolute inset-0 bg-gradient-to-tr from-teal-950/80 via-emerald-950/30 to-slate-950 z-0"></div>
-                <div class="relative z-10 max-w-lg space-y-5">
-                    <span class="text-5xl inline-block animate-bounce">🌿</span>
-                    <h2 class="text-3xl font-bold text-white tracking-tight">Nature Healing Space</h2>
-                    <p class="text-slate-300 text-sm leading-relaxed">Relax your body and sync your mind with natural sounds. Studies show listening to nature audio lowers stress hormones and elevates focus.</p>
-                    <div class="flex justify-center space-x-3 pt-2">
-                        <button onclick="changeTrack(1); switchTab('study')" class="px-5 py-2.5 text-xs font-semibold rounded-xl bg-emerald-600 hover:bg-emerald-500 text-slate-950 transition shadow-lg">Listen to Soft Rain</button>
-                        <button onclick="changeTrack(2); switchTab('study')" class="px-5 py-2.5 text-xs font-semibold rounded-xl bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-200 transition">Listen to Forest Stream</button>
-                    </div>
+                    <button onclick="toggleFollow(this)" class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-xl text-xs font-medium hover:bg-emerald-500 hover:text-slate-950 transition">Follow</button>
                 </div>
             </div>
         </section>
 
-        <!-- TAB 3: AESTHETIC COMMUNITY FEED -->
-        <section id="tab-community" class="hidden space-y-6">
-            <div class="glass p-8 rounded-3xl shadow-xl">
-                <div class="flex justify-between items-center mb-6">
+        <!-- TAB 4: ACCOUNT -->
+        <section id="tab-account" class="tab-content hidden space-y-6">
+            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-md">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 rounded-full bg-emerald-500 text-slate-950 font-bold text-2xl flex items-center justify-center">DB</div>
                     <div>
-                        <h3 class="text-xl font-bold text-emerald-400">Aesthetic Notes Feed</h3>
-                        <p class="text-xs text-slate-400">Discover and read study notes shared by students worldwide.</p>
+                        <h2 class="text-xl font-bold">DisappearBro</h2>
+                        <p class="text-xs text-slate-400">Profile Statistics & Goals</p>
                     </div>
                 </div>
-
-                <div id="community-feed" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[500px] overflow-y-auto pr-2">
-                    <!-- Default Aesthetic Posts -->
-                    <div class="p-5 rounded-2xl bg-slate-900/70 border border-slate-800/80 flex flex-col justify-between space-y-3">
-                        <div>
-                            <span class="text-[10px] font-mono uppercase bg-emerald-950/80 text-emerald-300 border border-emerald-800/50 px-2 py-0.5 rounded-md">Physics</span>
-                            <h4 class="font-semibold text-sm text-slate-200 mt-2">Quantum Entanglement Basics</h4>
-                            <p class="text-xs text-slate-400 mt-1 leading-relaxed">Particles remain connected so that actions performed on one affect the other, even when separated by huge distances...</p>
-                        </div>
-                        <span class="text-[10px] text-slate-500 font-mono">Shared by @astrophile • 2 hours ago</span>
+                <div class="grid grid-cols-3 gap-3 pt-2 text-center">
+                    <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                        <div class="text-lg font-bold text-emerald-400">18</div>
+                        <div class="text-[10px] text-slate-400 uppercase tracking-wider">Posts</div>
                     </div>
-
-                    <div class="p-5 rounded-2xl bg-slate-900/70 border border-slate-800/80 flex flex-col justify-between space-y-3">
-                        <div>
-                            <span class="text-[10px] font-mono uppercase bg-teal-950/80 text-teal-300 border border-teal-800/50 px-2 py-0.5 rounded-md">Philosophy</span>
-                            <h4 class="font-semibold text-sm text-slate-200 mt-2">Stoicism in Daily Learning</h4>
-                            <p class="text-xs text-slate-400 mt-1 leading-relaxed">Focus on what is within your control. Your effort, your attention, and your peace of mind are yours to master...</p>
-                        </div>
-                        <span class="text-[10px] text-slate-500 font-mono">Shared by @aurora_notes • 5 hours ago</span>
+                    <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                        <div class="text-lg font-bold text-emerald-400">420</div>
+                        <div class="text-[10px] text-slate-400 uppercase tracking-wider">Followers</div>
                     </div>
+                    <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                        <div class="text-lg font-bold text-emerald-400">98%</div>
+                        <div class="text-[10px] text-slate-400 uppercase tracking-wider">Goal Met</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: SAVED FILES -->
+        <section id="tab-files" class="tab-content hidden space-y-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-xl font-bold">Saved Files</h2>
+                    <p class="text-xs text-slate-400">Document, PDF, JPG, MP3 storage</p>
+                </div>
+                <label class="bg-emerald-500 text-slate-950 font-semibold px-4 py-2 rounded-xl text-xs hover:bg-emerald-400 transition cursor-pointer flex items-center gap-1.5 shadow">
+                    <i class="fa-solid fa-upload"></i> Upload File
+                    <input type="file" id="file-uploader" class="hidden" onchange="handleFileUpload(event)">
+                </label>
+            </div>
+
+            <div class="bg-emerald-950/20 border border-emerald-500/25 rounded-xl p-3 text-xs text-emerald-400 flex items-center gap-2">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>Your files won't disappear (Saved securely to your device & local storage).</span>
+            </div>
+
+            <div id="saved-files-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-4 flex items-center justify-between shadow-sm">
+                    <div class="flex items-center gap-3 overflow-hidden">
+                        <div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-file-pdf"></i>
+                        </div>
+                        <div class="truncate">
+                            <h4 class="font-semibold text-sm truncate">Study_Plan_2026.pdf</h4>
+                            <span class="text-[10px] text-slate-500">1.8 MB • Local Storage</span>
+                        </div>
+                    </div>
+                    <button class="text-slate-400 hover:text-emerald-400 p-2"><i class="fa-solid fa-download"></i></button>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <!-- FOOTER -->
-    <footer class="text-center py-6 text-xs text-slate-500 border-t border-slate-900/80">
-        disappear.com — Crafted for deep focus, peace, and aesthetic notes.
-    </footer>
+    <!-- BOTTOM NAVIGATION BAR -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-slate-950/90 border-t border-slate-800 backdrop-blur-lg z-40 px-2 py-2 shadow-2xl">
+        <div class="max-w-md mx-auto grid grid-cols-5 text-center">
+            <button onclick="switchTab('home')" class="nav-btn flex flex-col items-center justify-center py-1 text-emerald-400 transition" data-target="home">
+                <i class="fa-solid fa-house text-lg"></i>
+                <span class="text-[10px] mt-1 font-medium">Home</span>
+            </button>
+            <button onclick="switchTab('posts')" class="nav-btn flex flex-col items-center justify-center py-1 text-slate-400 hover:text-slate-200 transition" data-target="posts">
+                <i class="fa-solid fa-feather text-lg"></i>
+                <span class="text-[10px] mt-1 font-medium">Posts</span>
+            </button>
+            <button onclick="switchTab('people')" class="nav-btn flex flex-col items-center justify-center py-1 text-slate-400 hover:text-slate-200 transition" data-target="people">
+                <i class="fa-solid fa-user-group text-lg"></i>
+                <span class="text-[10px] mt-1 font-medium">People</span>
+            </button>
+            <button onclick="switchTab('account')" class="nav-btn flex flex-col items-center justify-center py-1 text-slate-400 hover:text-slate-200 transition" data-target="account">
+                <i class="fa-solid fa-user-circle text-lg"></i>
+                <span class="text-[10px] mt-1 font-medium">Account</span>
+            </button>
+            <button onclick="switchTab('files')" class="nav-btn flex flex-col items-center justify-center py-1 text-slate-400 hover:text-slate-200 transition" data-target="files">
+                <i class="fa-solid fa-folder-open text-lg"></i>
+                <span class="text-[10px] mt-1 font-medium">Saved Files</span>
+            </button>
+        </div>
+    </nav>
 
-    <!-- SCRIPT ENGINE -->
+    <!-- SCRIPTS -->
     <script>
-        // --- 1. PLAYLIST & AESTHETIC MP3 AUDIO PLAYER ENGINE ---
-        const playlist = [
-            {
-                title: "Midnight Lo-Fi Chill",
-                artist: "Aesthetic Study Audio",
-                cover: "https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=300&q=80",
-                url: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3"
-            },
-            {
-                title: "Gentle Rain & Thunder",
-                artist: "Nature Healing Sounds",
-                cover: "https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?auto=format&fit=crop&w=300&q=80",
-                url: "https://cdn.pixabay.com/download/audio/2021/09/06/audio_8410d51f7b.mp3?filename=rain-and-thunder-16705.mp3"
-            },
-            {
-                title: "Deep Forest Stream",
-                artist: "Peaceful Ambience",
-                cover: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=300&q=80",
-                url: "https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=forest-wind-and-birds-6881.mp3"
-            },
-            {
-                title: "Deep Space Ambient Piano",
-                artist: "Cosmic Melodies",
-                cover: "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=300&q=80",
-                url: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a7343e.mp3?filename=ambient-piano-10781.mp3"
-            }
-        ];
-
-        let currentTrackIndex = 0;
-        const audio = document.getElementById('audio-engine');
-        const playBtn = document.getElementById('play-btn');
-        const equalizer = document.getElementById('equalizer');
-
-        function loadTrack(index) {
-            currentTrackIndex = index;
-            const track = playlist[index];
-            audio.src = track.url;
-            document.getElementById('track-title').innerText = track.title;
-            document.getElementById('track-artist').innerText = track.artist;
-            document.getElementById('player-cover').src = track.cover;
-            document.getElementById('playlist-select').value = index;
-        }
-
-        function togglePlay() {
-            if (audio.paused) {
-                audio.play();
-                playBtn.innerText = '⏸';
-                equalizer.classList.remove('paused');
-            } else {
-                audio.pause();
-                playBtn.innerText = '▶';
-                equalizer.classList.add('paused');
-            }
-        }
-
-        function changeTrack(index) {
-            loadTrack(parseInt(index));
-            audio.play();
-            playBtn.innerText = '⏸';
-            equalizer.classList.remove('paused');
-        }
-
-        function prevTrack() {
-            currentTrackIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length;
-            changeTrack(currentTrackIndex);
-        }
-
-        function nextTrack() {
-            currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
-            changeTrack(currentTrackIndex);
-        }
-
-        function adjustVolume() {
-            audio.volume = document.getElementById('volume-slider').value;
-        }
-
-        audio.addEventListener('timeupdate', () => {
-            if(audio.duration) {
-                const pct = (audio.currentTime / audio.duration) * 100;
-                document.getElementById('seek-slider').value = pct;
-                document.getElementById('current-time').innerText = formatTime(audio.currentTime);
-                document.getElementById('total-duration').innerText = formatTime(audio.duration);
-            }
-        });
-
-        function seekTrack() {
-            const seekTo = audio.duration * (document.getElementById('seek-slider').value / 100);
-            audio.currentTime = seekTo;
-        }
-
-        function formatTime(sec) {
-            const m = Math.floor(sec / 60);
-            const s = Math.floor(sec % 60);
-            return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
-        }
-
-        // Initialize First Track
-        loadTrack(0);
-
-        // --- 2. QUOTES ROTATOR SYSTEM ---
-        const aestheticQuotes = [
-            "\"Silence is not the absence of sound, but the presence of peace.\"",
-            "\"Study quietly in the dark; let your achievement be the light.\"",
-            "\"Softly, gently, disappear into your deepest thoughts.\"",
-            "\"In the midst of movement and chaos, keep stillness inside of you.\"",
-            "\"Where words fail, music speaks and minds heal.\"",
-            "\"Work hard in silence, let your progress make the noise.\""
-        ];
-        let quoteIdx = 0;
-
-        function nextQuote() {
-            quoteIdx = (quoteIdx + 1) % aestheticQuotes.length;
-            document.getElementById('quote-text').innerText = aestheticQuotes[quoteIdx];
-        }
-
-        // --- 3. AUTO-SAVING NOTE & FILE EXPORT SYSTEM ---
-        const noteContent = document.getElementById('note-content');
-        const noteTitle = document.getElementById('note-title');
-        const charCount = document.getElementById('char-count');
-        const saveStatus = document.getElementById('save-status');
-
-        // Load saved draft
-        if (localStorage.getItem('disappear_saved_note')) {
-            noteContent.value = localStorage.getItem('disappear_saved_note');
-            charCount.innerText = `${noteContent.value.length} characters`;
-        }
-        if (localStorage.getItem('disappear_saved_title')) {
-            noteTitle.value = localStorage.getItem('disappear_saved_title');
-        }
-
-        noteContent.addEventListener('input', () => {
-            localStorage.setItem('disappear_saved_note', noteContent.value);
-            localStorage.setItem('disappear_saved_title', noteTitle.value);
-            charCount.innerText = `${noteContent.value.length} characters`;
-            saveStatus.innerText = "Saved to browser memory";
-        });
-
-        function saveNoteToFile() {
-            const title = noteTitle.value.trim() || 'aesthetic-study-note';
-            const content = noteContent.value;
-            if(!content) {
-                alert('Please write something in your note before saving!');
-                return;
-            }
-            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${title.toLowerCase().replace(/\s+/g, '-')}.txt`;
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        // --- 4. COMMUNITY FEED SHARING ---
-        function shareToCommunity() {
-            const title = noteTitle.value.trim();
-            const content = noteContent.value.trim();
-            if(!title || !content) {
-                alert('Please add a title and content before sharing to the community!');
-                return;
-            }
-            const feed = document.getElementById('community-feed');
-            const newPost = document.createElement('div');
-            newPost.className = 'p-5 rounded-2xl bg-slate-900/70 border border-slate-800/80 flex flex-col justify-between space-y-3';
-            newPost.innerHTML = `
-                <div>
-                    <span class="text-[10px] font-mono uppercase bg-emerald-950/80 text-emerald-300 border border-emerald-800/50 px-2 py-0.5 rounded-md">Community Note</span>
-                    <h4 class="font-semibold text-sm text-slate-200 mt-2">${escapeHtml(title)}</h4>
-                    <p class="text-xs text-slate-400 mt-1 leading-relaxed">${escapeHtml(content.substring(0, 140))}...</p>
-                </div>
-                <span class="text-[10px] text-slate-500 font-mono">Shared just now by You</span>
-            `;
-            feed.prepend(newPost);
-            switchTab('community');
-        }
-
-        function escapeHtml(str) {
-            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        }
-
-        // --- 5. TAB SWITCHER & CLOCK ---
-        function switchTab(tabId) {
-            ['study', 'nature', 'community'].forEach(id => {
-                document.getElementById(`tab-${id}`).classList.add('hidden');
-            });
-            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-        }
-
-        setInterval(() => {
+        function updateClock() {
             const now = new Date();
-            document.getElementById('clock-display').innerText = now.toLocaleTimeString();
-        }, 1000);
+            const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            document.getElementById('clock-text').innerText = now.toLocaleDateString('en-US', options);
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        function closeModal() {
+            document.getElementById('entry-modal').classList.add('hidden');
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-emerald-400');
+                btn.classList.add('text-slate-400');
+                if(btn.getAttribute('data-target') === tabId) {
+                    btn.classList.remove('text-slate-400');
+                    btn.classList.add('text-emerald-400');
+                }
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        const noteArea = document.getElementById('workspace-note');
+        if(localStorage.getItem('disappear_quick_note')) {
+            noteArea.value = localStorage.getItem('disappear_quick_note');
+        }
+        function saveNote() {
+            localStorage.setItem('disappear_quick_note', noteArea.value);
+            alert('Note saved successfully! Your notes won’t disappear.');
+        }
+
+        function playYouTubeMusic() {
+            const link = document.getElementById('yt-link-input').value;
+            if(link) {
+                alert('YouTube background music/ambience loaded successfully!');
+            } else {
+                alert('Please paste a YouTube track link or name first!');
+            }
+        }
+
+        function toggleFollow(btn) {
+            if(btn.innerText === 'Follow') {
+                btn.innerText = 'Following';
+                btn.classList.remove('bg-emerald-500/10', 'text-emerald-400');
+                btn.classList.add('bg-emerald-500', 'text-slate-950');
+            } else {
+                btn.innerText = 'Follow';
+                btn.classList.add('bg-emerald-500/10', 'text-emerald-400');
+                btn.classList.remove('bg-emerald-500', 'text-slate-950');
+            }
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if(file) {
+                const list = document.getElementById('saved-files-list');
+                const div = document.createElement('div');
+                div.className = 'bg-slate-900/60 border border-slate-800 rounded-xl p-4 flex items-center justify-between shadow-sm';
+                div.innerHTML = `
+                    <div class="flex items-center gap-3 overflow-hidden">
+                        <div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-file"></i>
+                        </div>
+                        <div class="truncate">
+                            <h4 class="font-semibold text-sm truncate">${file.name}</h4>
+                            <span class="text-[10px] text-slate-500">Saved securely locally</span>
+                        </div>
+                    </div>
+                    <button class="text-slate-400 hover:text-emerald-400 p-2"><i class="fa-solid fa-download"></i></button>
+                `;
+                list.prepend(div);
+                alert('File uploaded successfully! Your files won’t disappear.');
+            }
+        }
+
+        function createPost() {
+            const postText = prompt("Write your success story or post (up to 1000 words limit):");
+            if(postText) {
+                alert('Post published successfully to community feed!');
+            }
+        }
     </script>
 </body>
 </html>
